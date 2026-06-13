@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import Link from "next/link";
 import { useAuth } from "@/store/auth-context";
 
@@ -39,7 +39,9 @@ export default function FavoritesPage() {
   }, [user, authLoading]);
 
   useEffect(() => {
-    fetchFavorites();
+    startTransition(() => {
+      fetchFavorites();
+    });
   }, [fetchFavorites]);
 
   // Re-fetch when page gains focus (user may have added/removed elsewhere)

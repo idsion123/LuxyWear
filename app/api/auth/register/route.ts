@@ -44,7 +44,7 @@ export async function POST(request: Request) {
         password: hashedPassword,
         role: "CUSTOMER",
       })
-      .$returningId();
+      .returning({ id: users.id });
 
     const token = await signToken(
       { userId: newUser.id, email, role: "CUSTOMER" },

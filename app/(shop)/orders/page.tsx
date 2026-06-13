@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import Link from "next/link";
 import { useAuth } from "@/store/auth-context";
 
@@ -26,15 +26,17 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      fetch("/api/orders")
-        .then((r) => r.json())
-        .then((data) => setOrders(data.orders || []))
-        .catch(console.error)
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
+    startTransition(() => {
+      if (user) {
+        fetch("/api/orders")
+          .then((r) => r.json())
+          .then((data) => setOrders(data.orders || []))
+          .catch(console.error)
+          .finally(() => setLoading(false));
+      } else {
+        setLoading(false);
+      }
+    });
   }, [user]);
 
   if (!user) {

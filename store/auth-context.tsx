@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  startTransition,
   type ReactNode,
 } from "react";
 
@@ -46,7 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refreshUser();
+    startTransition(() => {
+      refreshUser().catch(() => setUser(null));
+    });
   }, [refreshUser]);
 
   const login = async (email: string, password: string) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import Link from "next/link";
 
 interface Order {
@@ -32,7 +32,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchOrders = async () => {
+  const doFetch = async () => {
     try {
       const res = await fetch("/api/admin/orders");
       const data = await res.json();
@@ -45,7 +45,9 @@ export default function AdminOrdersPage() {
   };
 
   useEffect(() => {
-    fetchOrders();
+    startTransition(() => {
+      doFetch();
+    });
   }, []);
 
   if (loading)

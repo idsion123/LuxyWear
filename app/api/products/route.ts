@@ -8,7 +8,6 @@ export async function GET(request: Request) {
   const category = searchParams.get("category");
   const search = searchParams.get("search");
   const sort = searchParams.get("sort") || "newest";
-  const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
   const admin = searchParams.get("admin") === "true";
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
@@ -105,7 +104,7 @@ export async function POST(request: Request) {
         colors: colors || [],
         isFeatured: isFeatured || false,
       })
-      .$returningId();
+      .returning({ id: products.id });
 
     // Link categories
     if (categoryIds && categoryIds.length > 0) {

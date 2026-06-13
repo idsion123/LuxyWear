@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { categories } from "@/db/schema";
-import { eq } from "drizzle-orm";
-
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const parentId = searchParams.get("parentId");
   const all = searchParams.get("all");
 
   const list = await db

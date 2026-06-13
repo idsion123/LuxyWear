@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 
 interface Stats {
   totalOrders: number;
@@ -13,10 +13,12 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/stats")
-      .then((r) => r.json())
-      .then(setStats)
-      .catch(console.error);
+    startTransition(() => {
+      fetch("/api/admin/stats")
+        .then((r) => r.json())
+        .then(setStats)
+        .catch(console.error);
+    });
   }, []);
 
   return (

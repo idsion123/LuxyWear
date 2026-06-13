@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import Link from "next/link";
 
 interface Category {
@@ -28,7 +28,9 @@ export default function AdminCategoriesPage() {
   };
 
   useEffect(() => {
-    fetchCategories();
+    startTransition(() => {
+      fetchCategories();
+    });
   }, []);
 
   const handleDelete = async (id: string) => {

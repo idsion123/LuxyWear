@@ -46,21 +46,21 @@ export function ChatBot() {
       if (!reader) throw new Error("无法读取响应");
 
       const decoder = new TextDecoder();
-      let assistantMsg = "";
 
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-      while (true) {
-        const { done, value } = await reader.read();
+      let done = false;
+      while (!done) {
+        const { done: isDone, value } = await reader.read();
+        done = isDone;
         if (done) break;
 
         const text = decoder.decode(value, { stream: true });
-        assistantMsg += text;
         setMessages((prev) => {
           const updated = [...prev];
           updated[updated.length - 1] = {
             role: "assistant",
-            content: assistantMsg,
+            content: (updated[updated.length - 1]?.content || "") + text,
           };
           return updated;
         });

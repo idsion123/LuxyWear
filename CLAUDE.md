@@ -7,13 +7,13 @@ Refer to PRD.md for the full product requirements, database schema, and implemen
 
 ## Dev Environment
 
-**Prerequisites**: Node.js v24+, MySQL 8.0+, pnpm 10.x
+**Prerequisites**: Node.js v24+, PostgreSQL 15+, pnpm 10.x
 
 **Environment variables** (create `.env` from template):
 
 | Variable | Description |
 |---|---|
-| `DATABASE_URL` | `mysql://user:password@localhost:3306/fashion_store` |
+| `DATABASE_URL` | `postgresql://user:password@localhost:5432/fashion_store` |
 | `JWT_SECRET` | 32+ chars for customer JWT |
 | `ADMIN_JWT_SECRET` | 32+ chars for admin JWT |
 | `OPENAI_API_KEY` | AI chat feature (optional) |

@@ -38,7 +38,6 @@ async function seedProducts(
   priceRange: [number, number],
 ) {
   const batch: (typeof products.$inferInsert)[] = [];
-  const rels: { productId: string; categoryId: string }[] = [];
 
   for (let i = 1; i <= count; i++) {
     const name = names[(i - 1) % names.length] + (i > names.length ? ` ${Math.ceil(i / names.length)}` : "");
@@ -58,7 +57,7 @@ async function seedProducts(
 
   for (let i = 0; i < batch.length; i += 10) {
     const chunk = batch.slice(i, i + 10);
-    const inserted = await db.insert(products).values(chunk).$returningId();
+    const inserted = await db.insert(products).values(chunk).returning({ id: products.id });
     await db.insert(productCategories).values(
       inserted.map((p) => ({ productId: p.id, categoryId })),
     );
@@ -100,57 +99,57 @@ async function seed() {
   console.log("Customer created: customer@test.com / customer123");
 
   // ── Categories ──
-  const womenswear = await db.insert(categories).values({
+  const [womenswear] = await db.insert(categories).values({
     name: "女装", slug: "womenswear", description: "时尚女装系列",
     image: "/images/woman_wear.png",
-  }).$returningId();
+  }).returning({ id: categories.id });
 
-  const dresses = await db.insert(categories).values({
+  const [dresses] = await db.insert(categories).values({
     name: "连衣裙", slug: "dresses", description: "优雅连衣裙",
     image: "/images/dress.png",
-    parentId: womenswear[0].id,
-  }).$returningId();
+    parentId: womenswear.id,
+  }).returning({ id: categories.id });
 
-  const tops = await db.insert(categories).values({
+  const [tops] = await db.insert(categories).values({
     name: "上衣", slug: "tops", description: "衬衫、T恤、针织衫",
     image: "/images/tops.png",
-    parentId: womenswear[0].id,
-  }).$returningId();
+    parentId: womenswear.id,
+  }).returning({ id: categories.id });
 
-  const outerwear = await db.insert(categories).values({
+  const [outerwear] = await db.insert(categories).values({
     name: "外套", slug: "outerwear", description: "大衣、风衣、夹克",
     image: "/images/coat.png",
-    parentId: womenswear[0].id,
-  }).$returningId();
+    parentId: womenswear.id,
+  }).returning({ id: categories.id });
 
-  const bottoms = await db.insert(categories).values({
+  const [bottoms] = await db.insert(categories).values({
     name: "下装", slug: "bottoms", description: "裤子、半身裙",
     image: "/images/bottom_wear.png",
-    parentId: womenswear[0].id,
-  }).$returningId();
+    parentId: womenswear.id,
+  }).returning({ id: categories.id });
 
-  const accessories = await db.insert(categories).values({
+  const [accessories] = await db.insert(categories).values({
     name: "配饰", slug: "accessories", description: "首饰、包包、围巾",
     image: "/images/accessories.png",
-  }).$returningId();
+  }).returning({ id: categories.id });
 
   console.log("Categories created");
 
   // ── Products ──
   console.log("Seeding dresses...");
-  await seedProducts(dresses[0].id, DRESS_NAMES, 30, [199, 899]);
+  await seedProducts(dresses.id, DRESS_NAMES, 30, [199, 899]);
 
   console.log("Seeding tops...");
-  await seedProducts(tops[0].id, TOP_NAMES, 35, [129, 699]);
+  await seedProducts(tops.id, TOP_NAMES, 35, [129, 699]);
 
   console.log("Seeding outerwear...");
-  await seedProducts(outerwear[0].id, OUTER_NAMES, 35, [299, 1999]);
+  await seedProducts(outerwear.id, OUTER_NAMES, 35, [299, 1999]);
 
   console.log("Seeding bottoms...");
-  await seedProducts(bottoms[0].id, BOTTOM_NAMES, 30, [159, 699]);
+  await seedProducts(bottoms.id, BOTTOM_NAMES, 30, [159, 699]);
 
   console.log("Seeding accessories...");
-  await seedProducts(accessories[0].id, ACC_NAMES, 45, [49, 599]);
+  await seedProducts(accessories.id, ACC_NAMES, 45, [49, 599]);
 
   console.log("Seed complete!");
 }

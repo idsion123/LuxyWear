@@ -9,7 +9,7 @@
 | 框架 | Next.js 16.2 (App Router) |
 | 语言 | TypeScript (Strict) |
 | 样式 | Tailwind CSS v4 |
-| 数据库 | MySQL 8.0 |
+| 数据库 | PostgreSQL 15+ |
 | ORM | Drizzle ORM |
 | 认证 | JWT (jose) + bcryptjs |
 | 状态管理 | React Context |
@@ -20,7 +20,7 @@
 ### 环境要求
 
 - Node.js v24+
-- MySQL 8.0+
+- PostgreSQL 15+
 - pnpm 10.x
 
 ### 安装

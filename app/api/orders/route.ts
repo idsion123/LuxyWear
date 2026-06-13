@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { orders, orderItems, cartItems, products } from "@/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth";
 import { generateOrderNumber } from "@/lib/utils";
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
         addressId,
         note: note || null,
       })
-      .$returningId();
+      .returning({ id: orders.id });
 
     // Create order items with snapshots
     await db.insert(orderItems).values(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import Link from "next/link";
 
 interface Product {
@@ -53,7 +53,9 @@ export default function AdminProductsPage() {
   }, [search, category, page]);
 
   useEffect(() => {
-    fetchProducts();
+    startTransition(() => {
+      fetchProducts();
+    });
   }, [fetchProducts]);
 
   const handleDelete = async (id: string) => {

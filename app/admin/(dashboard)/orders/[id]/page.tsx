@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ORDER_STATUS_TRANSITIONS } from "@/lib/constants";
@@ -38,21 +38,19 @@ export default function AdminOrderDetailPage() {
   const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchOrder = async () => {
-    try {
-      const res = await fetch(`/api/orders/${params.id}`);
-      const data = await res.json();
-      setOrder(data.order);
-      setItems(data.items || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchOrder();
+    startTransition(async () => {
+      try {
+        const res = await fetch(`/api/orders/${params.id}`);
+        const data = await res.json();
+        setOrder(data.order);
+        setItems(data.items || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    });
   }, [params.id]);
 
   const updateStatus = async (status: string) => {

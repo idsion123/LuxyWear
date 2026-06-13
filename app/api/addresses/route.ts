@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { addresses } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth";
 
@@ -35,7 +34,7 @@ export async function POST(request: Request) {
         zipCode,
         label: label || null,
       })
-      .$returningId();
+      .returning({ id: addresses.id });
 
     return NextResponse.json({ id: addr.id }, { status: 201 });
   } catch (error) {

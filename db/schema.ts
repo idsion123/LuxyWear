@@ -1,18 +1,18 @@
 import {
-  mysqlTable,
+  pgTable,
   varchar,
   text,
-  decimal,
-  int,
+  numeric,
+  integer,
   boolean,
-  datetime,
-  json,
+  timestamp,
+  jsonb,
   uniqueIndex,
   index,
   primaryKey,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/pg-core";
 
-export const users = mysqlTable(
+export const users = pgTable(
   "users",
   {
     id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
@@ -22,13 +22,13 @@ export const users = mysqlTable(
     role: varchar("role", { length: 20 }).notNull().default("CUSTOMER"),
     phone: varchar("phone", { length: 20 }),
     avatar: varchar("avatar", { length: 500 }),
-    createdAt: datetime("created_at").notNull().$defaultFn(now),
-    updatedAt: datetime("updated_at").notNull().$defaultFn(now).$onUpdateFn(now),
+    createdAt: timestamp("created_at").notNull().$defaultFn(now),
+    updatedAt: timestamp("updated_at").notNull().$defaultFn(now).$onUpdateFn(now),
   },
   (table) => [index("idx_user_email").on(table.email)]
 );
 
-export const addresses = mysqlTable(
+export const addresses = pgTable(
   "addresses",
   {
     id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
@@ -46,7 +46,7 @@ export const addresses = mysqlTable(
   (table) => [index("idx_address_user").on(table.userId)]
 );
 
-export const categories = mysqlTable(
+export const categories = pgTable(
   "categories",
   {
     id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
@@ -55,29 +55,29 @@ export const categories = mysqlTable(
     description: text("description"),
     image: varchar("image", { length: 500 }),
     parentId: varchar("parent_id", { length: 128 }),
-    createdAt: datetime("created_at").notNull().$defaultFn(now),
-    updatedAt: datetime("updated_at").notNull().$defaultFn(now).$onUpdateFn(now),
+    createdAt: timestamp("created_at").notNull().$defaultFn(now),
+    updatedAt: timestamp("updated_at").notNull().$defaultFn(now).$onUpdateFn(now),
   },
   (table) => [index("idx_category_parent").on(table.parentId)]
 );
 
-export const products = mysqlTable(
+export const products = pgTable(
   "products",
   {
     id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
     name: varchar("name", { length: 255 }).notNull(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     description: text("description").notNull(),
-    price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-    compareAtPrice: decimal("compare_at_price", { precision: 10, scale: 2 }),
-    stock: int("stock").notNull().default(0),
-    images: json("images").notNull().$type<string[]>().default([]),
-    sizes: json("sizes").notNull().$type<string[]>().default([]),
-    colors: json("colors").notNull().$type<{ name: string; hex: string }[]>().default([]),
+    price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+    compareAtPrice: numeric("compare_at_price", { precision: 10, scale: 2 }),
+    stock: integer("stock").notNull().default(0),
+    images: jsonb("images").notNull().$type<string[]>().default([]),
+    sizes: jsonb("sizes").notNull().$type<string[]>().default([]),
+    colors: jsonb("colors").notNull().$type<{ name: string; hex: string }[]>().default([]),
     isFeatured: boolean("is_featured").notNull().default(false),
     isPublished: boolean("is_published").notNull().default(true),
-    createdAt: datetime("created_at").notNull().$defaultFn(now),
-    updatedAt: datetime("updated_at").notNull().$defaultFn(now).$onUpdateFn(now),
+    createdAt: timestamp("created_at").notNull().$defaultFn(now),
+    updatedAt: timestamp("updated_at").notNull().$defaultFn(now).$onUpdateFn(now),
   },
   (table) => [
     index("idx_product_slug").on(table.slug),
@@ -85,7 +85,7 @@ export const products = mysqlTable(
   ]
 );
 
-export const productCategories = mysqlTable(
+export const productCategories = pgTable(
   "product_categories",
   {
     productId: varchar("product_id", { length: 128 }).notNull(),
@@ -97,16 +97,16 @@ export const productCategories = mysqlTable(
   ]
 );
 
-export const cartItems = mysqlTable(
+export const cartItems = pgTable(
   "cart_items",
   {
     id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
     userId: varchar("user_id", { length: 128 }).notNull(),
     productId: varchar("product_id", { length: 128 }).notNull(),
-    quantity: int("quantity").notNull().default(1),
+    quantity: integer("quantity").notNull().default(1),
     size: varchar("size", { length: 50 }),
     color: varchar("color", { length: 50 }),
-    createdAt: datetime("created_at").notNull().$defaultFn(now),
+    createdAt: timestamp("created_at").notNull().$defaultFn(now),
   },
   (table) => [
     uniqueIndex("uq_cart_user_product").on(table.userId, table.productId, table.size, table.color),
@@ -114,13 +114,13 @@ export const cartItems = mysqlTable(
   ]
 );
 
-export const favorites = mysqlTable(
+export const favorites = pgTable(
   "favorites",
   {
     id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
     userId: varchar("user_id", { length: 128 }).notNull(),
     productId: varchar("product_id", { length: 128 }).notNull(),
-    createdAt: datetime("created_at").notNull().$defaultFn(now),
+    createdAt: timestamp("created_at").notNull().$defaultFn(now),
   },
   (table) => [
     uniqueIndex("uq_fav_user_product").on(table.userId, table.productId),
@@ -128,23 +128,23 @@ export const favorites = mysqlTable(
   ]
 );
 
-export const orders = mysqlTable(
+export const orders = pgTable(
   "orders",
   {
     id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
     orderNumber: varchar("order_number", { length: 50 }).notNull().unique(),
     userId: varchar("user_id", { length: 128 }).notNull(),
     status: varchar("status", { length: 20 }).notNull().default("PENDING"),
-    totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
-    shippingFee: decimal("shipping_fee", { precision: 10, scale: 2 }).notNull().default("0"),
+    totalAmount: numeric("total_amount", { precision: 10, scale: 2 }).notNull(),
+    shippingFee: numeric("shipping_fee", { precision: 10, scale: 2 }).notNull().default("0"),
     addressId: varchar("address_id", { length: 128 }).notNull(),
     note: text("note"),
-    paidAt: datetime("paid_at"),
-    shippedAt: datetime("shipped_at"),
-    deliveredAt: datetime("delivered_at"),
-    cancelledAt: datetime("cancelled_at"),
-    createdAt: datetime("created_at").notNull().$defaultFn(now),
-    updatedAt: datetime("updated_at").notNull().$defaultFn(now).$onUpdateFn(now),
+    paidAt: timestamp("paid_at"),
+    shippedAt: timestamp("shipped_at"),
+    deliveredAt: timestamp("delivered_at"),
+    cancelledAt: timestamp("cancelled_at"),
+    createdAt: timestamp("created_at").notNull().$defaultFn(now),
+    updatedAt: timestamp("updated_at").notNull().$defaultFn(now).$onUpdateFn(now),
   },
   (table) => [
     index("idx_order_user").on(table.userId),
@@ -153,15 +153,15 @@ export const orders = mysqlTable(
   ]
 );
 
-export const orderItems = mysqlTable(
+export const orderItems = pgTable(
   "order_items",
   {
     id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
     orderId: varchar("order_id", { length: 128 }).notNull(),
     productId: varchar("product_id", { length: 128 }).notNull(),
     productName: varchar("product_name", { length: 255 }).notNull(),
-    price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-    quantity: int("quantity").notNull(),
+    price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+    quantity: integer("quantity").notNull(),
     size: varchar("size", { length: 50 }),
     color: varchar("color", { length: 50 }),
     image: varchar("image", { length: 500 }),
