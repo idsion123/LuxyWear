@@ -97,6 +97,17 @@ export const productCategories = pgTable(
   ]
 );
 
+export const categoryImages = pgTable(
+  "category_images",
+  {
+    id: varchar("id", { length: 128 }).primaryKey().$defaultFn(cuid),
+    categoryId: varchar("category_id", { length: 128 }).notNull(),
+    url: varchar("url", { length: 500 }).notNull(),
+    createdAt: timestamp("created_at").notNull().$defaultFn(now),
+  },
+  (table) => [index("idx_ci_category").on(table.categoryId)]
+);
+
 export const cartItems = pgTable(
   "cart_items",
   {
