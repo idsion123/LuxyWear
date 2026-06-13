@@ -64,7 +64,7 @@ export default async function HomePage() {
             <Link
               key={product.id}
               href={`/products/${product.slug}`}
-              className="group flex flex-col items-center text-center"
+              className="group flex flex-col text-center"
             >
               <div className="relative mb-3 aspect-[3/4] overflow-hidden bg-[#f5f0eb]">
                 {product.images?.[0] ? (
