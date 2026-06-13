@@ -44,62 +44,67 @@ export default function NewCategoryPage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="mb-6 text-2xl font-serif text-[#2d2a24]">新增分类</h1>
+      <div className="mb-8">
+        <h1 className="text-2xl font-serif text-[#2d2a24]">新增分类</h1>
+        <p className="mt-1 text-sm text-[#7a746e]">创建新的商品分类</p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && (
-          <div className="rounded-sm bg-red-50 p-3 text-sm text-red-600">
+          <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {error}
           </div>
         )}
 
-        <div>
-          <label className="mb-1 block text-sm text-[#7a746e]">名称</label>
-          <input
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              if (!slug || slug === generateSlug(slug)) {
-                setSlug(generateSlug(e.target.value));
-              }
-            }}
-            className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-            required
-          />
+        <div className="border border-[#e8e3de] bg-white p-6 space-y-5">
+          <div>
+            <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">名称</label>
+            <input
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (!slug || slug === generateSlug(slug)) {
+                  setSlug(generateSlug(e.target.value));
+                }
+              }}
+              className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e]"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">Slug</label>
+            <input
+              value={slug}
+              onChange={(e) => setSlug(generateSlug(e.target.value))}
+              className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e]"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">描述</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e] resize-none"
+            />
+          </div>
         </div>
 
-        <div>
-          <label className="mb-1 block text-sm text-[#7a746e]">Slug</label>
-          <input
-            value={slug}
-            onChange={(e) => setSlug(generateSlug(e.target.value))}
-            className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="mb-1 block text-sm text-[#7a746e]">描述</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-            className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]"
-          />
-        </div>
-
-        <div className="flex gap-3">
+        <div className="flex gap-3 pt-2">
           <button
             type="submit"
             disabled={loading}
-            className="rounded-sm bg-[#c9a96e] px-6 py-2.5 text-sm text-white hover:bg-[#a8884a] disabled:opacity-50"
+            className="border border-[#c9a96e] bg-[#c9a96e] px-6 py-2.5 text-sm text-white transition-colors hover:bg-[#a8884a] hover:border-[#a8884a] disabled:opacity-50"
           >
             {loading ? "创建中..." : "创建"}
           </button>
           <button
             type="button"
             onClick={() => router.back()}
-            className="rounded-sm border border-[#e8e3de] px-6 py-2.5 text-sm text-[#7a746e] hover:bg-[#f5f0eb]"
+            className="border border-[#e8e3de] px-6 py-2.5 text-sm text-[#7a746e] transition-colors hover:border-[#c9a96e] hover:text-[#c9a96e]"
           >
             取消
           </button>

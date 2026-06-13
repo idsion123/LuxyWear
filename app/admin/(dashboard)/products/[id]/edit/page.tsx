@@ -128,111 +128,166 @@ export default function EditProductPage() {
   if (pageLoading) return <div className="text-sm text-[#7a746e]">加载中...</div>;
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="mb-6 text-2xl font-serif text-[#2d2a24]">编辑商品</h1>
+    <div className="max-w-3xl">
+      <div className="mb-8">
+        <h1 className="text-2xl font-serif text-[#2d2a24]">编辑商品</h1>
+        <p className="mt-1 text-sm text-[#7a746e]">修改商品信息</p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {error && <div className="rounded-sm bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
+        )}
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="border border-[#e8e3de] bg-white p-6 space-y-5">
+          <h3 className="text-xs font-medium tracking-wider text-[#2d2a24] uppercase border-b border-[#e8e3de] pb-3">基本信息</h3>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">名称 *</label>
+              <input value={name} onChange={(e) => setName(e.target.value)}
+                className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e]" required />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">Slug</label>
+              <input value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
+                className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e]" />
+            </div>
+          </div>
+
           <div>
-            <label className="mb-1 block text-sm text-[#7a746e]">名称 *</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" required />
+            <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">分类</label>
+            <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full border border-[#e8e3de] bg-white bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20stroke%3D%22%237a746e%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[right_12px_center] bg-no-repeat px-4 py-2.5 pr-10 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e]">
+              <option value="">选择分类</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
           </div>
+
           <div>
-            <label className="mb-1 block text-sm text-[#7a746e]">Slug</label>
-            <input value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"))} className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+            <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">描述</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4}
+              className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e] resize-none" />
           </div>
         </div>
 
-        <div>
-          <label className="mb-1 block text-sm text-[#7a746e]">分类</label>
-          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]">
-            <option value="">选择分类</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
-          </select>
+        <div className="border border-[#e8e3de] bg-white p-6 space-y-5">
+          <h3 className="text-xs font-medium tracking-wider text-[#2d2a24] uppercase border-b border-[#e8e3de] pb-3">价格与库存</h3>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div>
+              <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">价格 *</label>
+              <input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)}
+                className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e]" required />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">原价</label>
+              <input type="number" step="0.01" value={compareAtPrice} onChange={(e) => setCompareAtPrice(e.target.value)}
+                className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">库存</label>
+              <input type="number" value={stock} onChange={(e) => setStock(e.target.value)}
+                className="w-full border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e]" />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="mb-1 block text-sm text-[#7a746e]">描述</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-        </div>
+        <div className="border border-[#e8e3de] bg-white p-6 space-y-5">
+          <h3 className="text-xs font-medium tracking-wider text-[#2d2a24] uppercase border-b border-[#e8e3de] pb-3">规格</h3>
 
-        <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="mb-1 block text-sm text-[#7a746e]">价格 *</label>
-            <input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" required />
+            <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">尺码</label>
+            <div className="flex gap-2">
+              <input value={sizeInput} onChange={(e) => setSizeInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSize())}
+                placeholder="输入后回车添加"
+                className="flex-1 border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e] placeholder:text-[#7a746e]/60" />
+              <button type="button" onClick={addSize}
+                className="border border-[#e8e3de] px-4 text-sm text-[#7a746e] transition-colors hover:border-[#c9a96e] hover:text-[#c9a96e]">
+                添加
+              </button>
+            </div>
+            {sizes.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {sizes.map((s) => (
+                  <span key={s} className="inline-flex items-center gap-1.5 border border-[#e8e3de] bg-[#faf8f5] px-3 py-1.5 text-sm text-[#2d2a24]">
+                    {s}
+                    <button type="button" onClick={() => setSizes(sizes.filter((x) => x !== s))}
+                      className="text-[#c46565] transition-colors hover:text-red-600">&times;</button>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
+
           <div>
-            <label className="mb-1 block text-sm text-[#7a746e]">原价</label>
-            <input type="number" step="0.01" value={compareAtPrice} onChange={(e) => setCompareAtPrice(e.target.value)} className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+            <label className="mb-1.5 block text-xs tracking-wider text-[#7a746e] uppercase">颜色</label>
+            <div className="flex gap-2">
+              <input value={colorName} onChange={(e) => setColorName(e.target.value)} placeholder="颜色名称"
+                className="flex-1 border border-[#e8e3de] px-4 py-2.5 text-sm text-[#2d2a24] outline-none transition-colors focus:border-[#c9a96e] placeholder:text-[#7a746e]/60" />
+              <input type="color" value={colorHex} onChange={(e) => setColorHex(e.target.value)}
+                className="h-[42px] w-[42px] cursor-pointer border border-[#e8e3de]" />
+              <button type="button" onClick={addColor}
+                className="border border-[#e8e3de] px-4 text-sm text-[#7a746e] transition-colors hover:border-[#c9a96e] hover:text-[#c9a96e]">
+                添加
+              </button>
+            </div>
+            {colors.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {colors.map((c, i) => (
+                  <span key={i} className="inline-flex items-center gap-2 border border-[#e8e3de] bg-[#faf8f5] px-3 py-1.5 text-sm text-[#2d2a24]">
+                    <span className="inline-block h-4 w-4 rounded-full border border-[#e8e3de]" style={{ backgroundColor: c.hex }} />
+                    {c.name}
+                    <button type="button" onClick={() => setColors(colors.filter((_, j) => j !== i))}
+                      className="text-[#c46565] transition-colors hover:text-red-600">&times;</button>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
+        </div>
+
+        <div className="border border-[#e8e3de] bg-white p-6 space-y-4">
+          <h3 className="text-xs font-medium tracking-wider text-[#2d2a24] uppercase border-b border-[#e8e3de] pb-3">商品图片</h3>
+
           <div>
-            <label className="mb-1 block text-sm text-[#7a746e]">库存</label>
-            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className="w-full rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
+            <label className="relative inline-flex cursor-pointer items-center gap-2 border border-[#e8e3de] px-4 py-2.5 text-sm text-[#7a746e] transition-colors hover:border-[#c9a96e] hover:text-[#c9a96e]">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              上传图片
+              <input type="file" accept="image/*" onChange={handleUpload} disabled={uploading} className="absolute inset-0 cursor-pointer opacity-0" />
+            </label>
+            {uploading && <span className="ml-3 text-sm text-[#c9a96e]">上传中...</span>}
           </div>
-        </div>
 
-        {/* Sizes */}
-        <div>
-          <label className="mb-1 block text-sm text-[#7a746e]">尺码</label>
-          <div className="flex gap-2">
-            <input value={sizeInput} onChange={(e) => setSizeInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSize())} placeholder="输入后回车添加" className="flex-1 rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-            <button type="button" onClick={addSize} className="rounded-sm bg-[#f5f0eb] px-4 text-sm text-[#7a746e] hover:bg-[#e8e3de]">添加</button>
-          </div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {sizes.map((s) => (
-              <span key={s} className="flex items-center gap-1 rounded-sm border border-[#e8e3de] px-3 py-1 text-sm">
-                {s}
-                <button type="button" onClick={() => setSizes(sizes.filter((x) => x !== s))} className="text-red-500">&times;</button>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Colors */}
-        <div>
-          <label className="mb-1 block text-sm text-[#7a746e]">颜色</label>
-          <div className="flex gap-2">
-            <input value={colorName} onChange={(e) => setColorName(e.target.value)} placeholder="颜色名称" className="flex-1 rounded-sm border border-[#e8e3de] px-4 py-2.5 text-sm outline-none focus:border-[#c9a96e]" />
-            <input type="color" value={colorHex} onChange={(e) => setColorHex(e.target.value)} className="h-[42px] w-[42px] cursor-pointer rounded-sm border" />
-            <button type="button" onClick={addColor} className="rounded-sm bg-[#f5f0eb] px-4 text-sm text-[#7a746e] hover:bg-[#e8e3de]">添加</button>
-          </div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {colors.map((c, i) => (
-              <span key={i} className="flex items-center gap-2 rounded-sm border border-[#e8e3de] px-3 py-1 text-sm">
-                <span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: c.hex }} />
-                {c.name}
-                <button type="button" onClick={() => setColors(colors.filter((_, j) => j !== i))} className="text-red-500">&times;</button>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Images */}
-        <div>
-          <label className="mb-1 block text-sm text-[#7a746e]">商品图片</label>
-          <input type="file" accept="image/*" onChange={handleUpload} disabled={uploading} className="text-sm" />
-          {uploading && <span className="ml-2 text-sm text-[#c9a96e]">上传中...</span>}
           {images.length > 0 && (
-            <div className="mt-2 flex gap-2">
+            <div className="flex flex-wrap gap-3">
               {images.map((url, i) => (
-                <div key={i} className="relative">
-                  <img src={url} alt="" className="h-20 w-20 rounded-sm object-cover" />
-                  <button type="button" onClick={() => setImages(images.filter((_, j) => j !== i))} className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">&times;</button>
+                <div key={i} className="group relative h-20 w-20 overflow-hidden border border-[#e8e3de]">
+                  <img src={url} alt="" className="h-full w-full object-cover" />
+                  <button type="button" onClick={() => setImages(images.filter((_, j) => j !== i))}
+                    className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center bg-red-500 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+                    &times;
+                  </button>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div className="flex gap-3 pt-4">
-          <button type="submit" disabled={loading} className="rounded-sm bg-[#c9a96e] px-6 py-2.5 text-sm text-white hover:bg-[#a8884a] disabled:opacity-50">
+        <div className="flex gap-3 border-t border-[#e8e3de] pt-6">
+          <button type="submit" disabled={loading}
+            className="border border-[#c9a96e] bg-[#c9a96e] px-6 py-2.5 text-sm text-white transition-colors hover:bg-[#a8884a] hover:border-[#a8884a] disabled:opacity-50">
             {loading ? "保存中..." : "保存"}
           </button>
-          <button type="button" onClick={() => router.back()} className="rounded-sm border border-[#e8e3de] px-6 py-2.5 text-sm text-[#7a746e] hover:bg-[#f5f0eb]">取消</button>
+          <button type="button" onClick={() => router.back()}
+            className="border border-[#e8e3de] px-6 py-2.5 text-sm text-[#7a746e] transition-colors hover:border-[#c9a96e] hover:text-[#c9a96e]">
+            取消
+          </button>
         </div>
       </form>
     </div>

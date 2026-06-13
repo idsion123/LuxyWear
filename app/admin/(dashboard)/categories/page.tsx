@@ -48,7 +48,11 @@ export default function AdminCategoriesPage() {
     }
   };
 
-  if (loading) return <div className="text-sm text-[#7a746e]">加载中...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center py-16 text-sm text-[#7a746e]">
+      加载中...
+    </div>
+  );
 
   const rootCategories = categories.filter((c) => !c.parentId);
   const getChildren = (parentId: string) =>
@@ -57,23 +61,29 @@ export default function AdminCategoriesPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-serif text-[#2d2a24]">分类管理</h1>
+        <div>
+          <h1 className="text-2xl font-serif text-[#2d2a24]">分类管理</h1>
+          <p className="mt-1 text-sm text-[#7a746e]">共 {categories.length} 个分类</p>
+        </div>
         <Link
           href="/admin/categories/new"
-          className="rounded-sm bg-[#c9a96e] px-4 py-2 text-sm text-white hover:bg-[#a8884a]"
+          className="inline-flex items-center gap-1.5 border border-[#c9a96e] bg-[#c9a96e] px-4 py-2 text-sm text-white transition-colors hover:bg-[#a8884a] hover:border-[#a8884a]"
         >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
           新增分类
         </Link>
       </div>
 
-      <div className="rounded-lg bg-white shadow-sm">
+      <div className="overflow-x-auto border border-[#e8e3de] bg-white">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-[#e8e3de] text-[#7a746e]">
-              <th className="px-6 py-4 font-medium">名称</th>
-              <th className="px-6 py-4 font-medium">Slug</th>
-              <th className="px-6 py-4 font-medium">描述</th>
-              <th className="px-6 py-4 font-medium">操作</th>
+            <tr className="border-b border-[#e8e3de] bg-[#faf8f5]">
+              <th className="px-5 py-3.5 text-xs font-medium tracking-wider text-[#7a746e] uppercase">名称</th>
+              <th className="px-5 py-3.5 text-xs font-medium tracking-wider text-[#7a746e] uppercase">Slug</th>
+              <th className="px-5 py-3.5 text-xs font-medium tracking-wider text-[#7a746e] uppercase">描述</th>
+              <th className="px-5 py-3.5 text-xs font-medium tracking-wider text-[#7a746e] uppercase">操作</th>
             </tr>
           </thead>
           <tbody>
@@ -88,7 +98,7 @@ export default function AdminCategoriesPage() {
             ))}
             {categories.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-6 py-8 text-center text-[#7a746e]">
+                <td colSpan={4} className="px-5 py-12 text-center text-sm text-[#7a746e]">
                   暂无分类
                 </td>
               </tr>
@@ -115,22 +125,22 @@ function CategoryRow({
 
   return (
     <>
-      <tr className="border-b border-[#e8e3de] last:border-0">
+      <tr className="border-b border-[#e8e3de] last:border-0 hover:bg-[#faf8f5]/50">
         <td
-          className="px-6 py-4"
-          style={{ paddingLeft: `${24 + depth * 24}px` }}
+          className="px-5 py-4 font-medium text-[#2d2a24]"
+          style={{ paddingLeft: `${20 + depth * 24}px` }}
         >
           {depth > 0 && (
             <span className="mr-2 text-[#c9a96e]">└</span>
           )}
           {category.name}
         </td>
-        <td className="px-6 py-4 text-[#7a746e]">{category.slug}</td>
-        <td className="px-6 py-4 text-[#7a746e]">{category.description || "-"}</td>
-        <td className="px-6 py-4">
+        <td className="px-5 py-4 text-[#7a746e]">{category.slug}</td>
+        <td className="px-5 py-4 text-[#7a746e]">{category.description || "—"}</td>
+        <td className="px-5 py-4">
           <button
             onClick={() => onDelete(category.id)}
-            className="text-sm text-red-500 hover:text-red-700"
+            className="text-xs tracking-wider text-red-400 transition-colors hover:text-red-600 uppercase"
           >
             删除
           </button>
