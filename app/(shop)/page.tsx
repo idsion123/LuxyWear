@@ -2,19 +2,27 @@ import { db } from "@/lib/db";
 import { products, categories } from "@/db/schema";
 import { eq, desc, asc } from "drizzle-orm";
 import Link from "next/link";
+import Image from "next/image";
+
+export const revalidate = 60;
 
 export default async function HomePage() {
-  const featuredProducts = await db
-    .select()
-    .from(products)
-    .where(eq(products.isFeatured, true))
-    .orderBy(desc(products.createdAt))
-    .limit(8);
+  let featuredProducts: (typeof products.$inferSelect)[] = [];
+  let allCategories: (typeof categories.$inferSelect)[] = [];
 
-  const allCategories = await db
-    .select()
-    .from(categories)
-    .orderBy(asc(categories.name));
+  try {
+    [featuredProducts, allCategories] = await Promise.all([
+      db
+        .select()
+        .from(products)
+        .where(eq(products.isFeatured, true))
+        .orderBy(desc(products.createdAt))
+        .limit(8),
+      db.select().from(categories).orderBy(asc(categories.name)),
+    ]);
+  } catch {
+    // Database unavailable during build — render gracefully
+  }
 
   return (
     <div>
@@ -58,12 +66,14 @@ export default async function HomePage() {
               href={`/products/${product.slug}`}
               className="group flex flex-col items-center text-center"
             >
-              <div className="mb-3 aspect-[3/4] bg-[#f5f0eb]">
+              <div className="relative mb-3 aspect-[3/4] overflow-hidden bg-[#f5f0eb]">
                 {product.images?.[0] ? (
-                  <img
+                  <Image
                     src={product.images[0]}
                     alt={product.name}
-                    className="h-full w-full object-cover transition-opacity group-hover:opacity-90"
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-cover transition-opacity group-hover:opacity-90"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center text-[#e8e3de]">
@@ -102,10 +112,12 @@ export default async function HomePage() {
                 className="group relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[#faf8f5] transition-colors hover:bg-[#f5f0eb]"
               >
                 {cat.image ? (
-                  <img
+                  <Image
                     src={cat.image}
                     alt={cat.name}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : null}
                 <div className="relative z-10 flex h-full w-full items-center justify-center bg-black/0 transition-colors group-hover:bg-black/20">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 interface Product {
   id: string;
@@ -36,10 +37,12 @@ export function ProductGrid({ products }: { products: Product[] }) {
         >
           <div className="relative mb-4 aspect-[3/4] overflow-hidden bg-[#f5f0eb] shadow-sm transition-shadow duration-500 group-hover:shadow-lg">
             {product.images?.[0] ? (
-              <img
+              <Image
                 src={product.images[0]}
                 alt={product.name}
-                className="h-full w-full object-cover transition-all duration-700 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 50vw, 33vw"
+                className="object-cover transition-all duration-700 group-hover:scale-105"
               />
             ) : (
               <div className="flex h-full items-center justify-center text-[#e8e3de] tracking-[0.3em]">

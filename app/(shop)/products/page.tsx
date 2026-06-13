@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { SortSelect } from "@/components/product/SortSelect";
 
+export const revalidate = 60;
+
 interface PageProps {
   searchParams: Promise<{
     category?: string;

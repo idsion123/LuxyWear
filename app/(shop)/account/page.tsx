@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { useAuth } from "@/store/auth-context";
+import Image from "next/image";
 
 export default function AccountPage() {
   const { user, loading, refreshUser } = useAuth();
@@ -141,7 +142,7 @@ export default function AccountPage() {
               <div className="flex items-center gap-4">
                 <div className="relative h-16 w-16 overflow-hidden rounded-full bg-[#f5f0eb]">
                   {avatar ? (
-                    <img src={avatar} alt="" className="h-full w-full object-cover" />
+                    <Image src={avatar} alt="" fill className="object-cover" />
                   ) : (
                     <div className="flex h-full items-center justify-center text-lg text-[#c9a96e]">
                       {user.name.charAt(0)}
@@ -229,9 +230,9 @@ export default function AccountPage() {
           ) : (
             <div className="space-y-3 text-sm">
               <div className="flex items-center gap-4 pb-3">
-                <div className="h-14 w-14 overflow-hidden rounded-full bg-[#f5f0eb]">
+                <div className="relative h-14 w-14 overflow-hidden rounded-full bg-[#f5f0eb]">
                   {user.avatar ? (
-                    <img src={user.avatar} alt="" className="h-full w-full object-cover" />
+                    <Image src={user.avatar} alt="" fill className="object-cover" />
                   ) : (
                     <div className="flex h-full items-center justify-center text-lg text-[#c9a96e]">
                       {user.name.charAt(0)}

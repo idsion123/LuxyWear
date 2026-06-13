@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, startTransition } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Product {
   id: string;
@@ -141,8 +142,8 @@ export default function AdminProductsPage() {
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3.5">
                       {product.images?.[0] ? (
-                        <div className="h-12 w-12 overflow-hidden border border-[#e8e3de] bg-[#f5f0eb]">
-                          <img src={product.images[0]} alt="" className="h-full w-full object-cover" />
+                        <div className="relative h-12 w-12 overflow-hidden border border-[#e8e3de] bg-[#f5f0eb]">
+                          <Image src={product.images[0]} alt="" fill className="object-cover" />
                         </div>
                       ) : (
                         <div className="flex h-12 w-12 items-center justify-center border border-[#e8e3de] bg-[#f5f0eb] text-xs text-[#e8e3de]">

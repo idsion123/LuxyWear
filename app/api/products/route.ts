@@ -51,7 +51,9 @@ export async function GET(request: Request) {
       .where(eq(productCategories.categoryId, category));
 
     if (pc.length === 0) {
-      return NextResponse.json({ products: [], total: 0, page, limit });
+      return NextResponse.json({ products: [], total: 0, page, limit }, {
+        headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
+      });
     }
 
     conditions.push(
@@ -76,7 +78,9 @@ export async function GET(request: Request) {
       .then((r) => Number(r[0]?.count ?? 0)),
   ]);
 
-  return NextResponse.json({ products: list, total: countResult, page, limit });
+  return NextResponse.json({ products: list, total: countResult, page, limit }, {
+    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
+  });
 }
 
 export async function POST(request: Request) {
@@ -87,7 +91,7 @@ export async function POST(request: Request) {
     if (!name || !slug || !price) {
       return NextResponse.json(
         { error: "名称、Slug和价格为必填" },
-        { status: 400 }
+        { status: 400, headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } }
       );
     }
 
@@ -116,9 +120,15 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ id: newProduct.id }, { status: 201 });
+    return NextResponse.json({ id: newProduct.id }, {
+      status: 201,
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
+    });
   } catch (error) {
     console.error("Create product error:", error);
-    return NextResponse.json({ error: "创建商品失败" }, { status: 500 });
+    return NextResponse.json({ error: "创建商品失败" }, {
+      status: 500,
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
+    });
   }
 }

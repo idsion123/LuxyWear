@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/store/auth-context";
 import { useCart } from "@/store/cart-context";
+import Image from "next/image";
 
 interface Product {
   id: string;
@@ -158,12 +159,15 @@ export function ProductDetailClient({
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Image Gallery */}
         <div>
-          <div className="mb-4 aspect-[3/4] overflow-hidden bg-[#f5f0eb]">
+          <div className="relative mb-4 aspect-[3/4] overflow-hidden bg-[#f5f0eb]">
             {images[selectedImage] ? (
-              <img
+              <Image
                 src={images[selectedImage]}
                 alt={product.name}
-                className="h-full w-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+                priority
               />
             ) : (
               <div className="flex h-full items-center justify-center text-[#e8e3de]">
@@ -177,17 +181,19 @@ export function ProductDetailClient({
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className={`h-20 w-20 overflow-hidden rounded-sm border-2 ${
+                  className={`relative h-20 w-20 overflow-hidden rounded-sm border-2 ${
                     i === selectedImage
                       ? "border-[#c9a96e]"
                       : "border-transparent"
                   }`}
                 >
                   {img ? (
-                    <img
+                    <Image
                       src={img}
                       alt=""
-                      className="h-full w-full object-cover"
+                      fill
+                      sizes="80px"
+                      className="object-cover"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center bg-[#f5f0eb] text-xs text-[#e8e3de]">
@@ -350,12 +356,14 @@ export function ProductDetailClient({
                 href={`/products/${rp.slug}`}
                 className="group flex flex-col items-center text-center"
               >
-                <div className="mb-3 aspect-[3/4] w-full overflow-hidden bg-[#f5f0eb]">
+                <div className="relative mb-3 aspect-[3/4] w-full overflow-hidden bg-[#f5f0eb]">
                   {rp.images?.[0] ? (
-                    <img
+                    <Image
                       src={rp.images[0]}
                       alt={rp.name}
-                      className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-cover transition-all duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-[#e8e3de]">

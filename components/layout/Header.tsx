@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/store/auth-context";
 import { useState } from "react";
 
@@ -37,9 +38,9 @@ export function Header() {
           {loading ? null : user ? (
             <div className="relative group">
               <button className="flex items-center gap-2 text-sm text-[#7a746e] hover:text-[#2d2a24]">
-                <span className="inline-flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#f5f0eb]">
+                <span className="relative inline-flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#f5f0eb]">
                   {user.avatar ? (
-                    <img src={user.avatar} alt="" className="h-full w-full object-cover" />
+                    <Image src={user.avatar} alt="" fill className="object-cover" />
                   ) : (
                     <span className="text-xs text-[#c9a96e]">{user.name.charAt(0)}</span>
                   )}

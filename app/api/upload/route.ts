@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
     const dir = formData.get("dir") as string | null;
     const subDir = sanitizeDir(dir);
-    const filename = generateFilename(file.name);
+    const filename = generateFilename();
     const isLocal = !process.env.BLOB_READ_WRITE_TOKEN;
 
     const url = isLocal

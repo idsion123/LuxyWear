@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Category {
   id: string;
@@ -263,7 +264,7 @@ export default function NewProductPage() {
             <div className="flex flex-wrap gap-3">
               {images.map((url, i) => (
                 <div key={i} className="group relative h-20 w-20 overflow-hidden border border-[#e8e3de]">
-                  <img src={url} alt="" className="h-full w-full object-cover" />
+                  <Image src={url} alt="" fill className="object-cover" />
                   <button type="button" onClick={() => setImages(images.filter((_, j) => j !== i))}
                     className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center bg-red-500 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
                     &times;
