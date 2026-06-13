@@ -135,7 +135,9 @@ export default function AdminLayout({
       <div className="flex-1 space-y-0.5 px-3 py-6">
         {NAV_ITEMS.map((item) => {
           const isActive =
-            pathname === item.href || pathname.startsWith(item.href + "/");
+            item.href === "/admin"
+              ? pathname === "/admin"
+              : pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <Link
               key={item.href}
