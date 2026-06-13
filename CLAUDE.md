@@ -13,10 +13,22 @@ Refer to PRD.md for the full product requirements, database schema, and implemen
 
 | Variable | Description |
 |---|---|
-| `DATABASE_URL` | `postgresql://user:password@localhost:5432/fashion_store` |
+| `DATABASE_URL` | Supabase: `postgresql://user:pass@db.ref.supabase.co:6543/postgres?pgbouncer=true` |
 | `JWT_SECRET` | 32+ chars for customer JWT |
 | `ADMIN_JWT_SECRET` | 32+ chars for admin JWT |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (file uploads) |
 | `OPENAI_API_KEY` | AI chat feature (optional) |
+
+## Deployment
+
+**Platform**: Vercel (app) + Supabase (database)
+
+1. Create Supabase project, run migrations (`pnpm db:migrate`)
+2. Push to GitHub, import in Vercel
+3. Set environment variables in Vercel dashboard
+4. Deploy (build command: `pnpm build`)
+
+> **Note**: File uploads use Vercel Blob — set `BLOB_READ_WRITE_TOKEN` in Vercel env. `sharp` is required for image optimization (already installed).
 
 ## Commands
 

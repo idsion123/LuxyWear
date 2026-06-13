@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 
 export async function POST(request: Request) {
   try {
@@ -11,7 +10,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "请选择文件" }, { status: 400 });
     }
 
-    // Validate file type
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
@@ -20,7 +18,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: "文件大小不能超过 5MB" },
@@ -32,15 +29,13 @@ export async function POST(request: Request) {
     const subDir = dir && /^[a-z0-9_-]+$/.test(dir) ? dir : "others";
     const ext = file.name.split(".").pop() || "jpg";
     const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
-    const uploadDir = path.join(process.cwd(), "public", "images", "products", subDir);
 
-    await mkdir(uploadDir, { recursive: true });
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(uploadDir, filename), buffer);
+    const blob = await put(`images/products/${subDir}/${filename}`, file, {
+      access: "public",
+    });
 
     return NextResponse.json({
-      url: `/images/products/${subDir}/${filename}`,
+      url: blob.url,
       filename,
       dir: subDir,
     });

@@ -61,7 +61,10 @@ export default function AdminOrderDetailPage() {
         body: JSON.stringify({ status }),
       });
       if (res.ok) {
-        fetchOrder();
+        const r = await fetch(`/api/orders/${params.id}`);
+        const data = await r.json();
+        setOrder(data.order);
+        setItems(data.items || []);
       } else {
         const data = await res.json();
         alert(data.error);

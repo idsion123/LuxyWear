@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 
 export async function POST(request: Request) {
   try {
@@ -22,13 +21,12 @@ export async function POST(request: Request) {
 
     const ext = file.name.split(".").pop() || "jpg";
     const filename = `avatar-${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
-    const uploadDir = path.join(process.cwd(), "public", "images", "avatars");
-    await mkdir(uploadDir, { recursive: true });
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(uploadDir, filename), buffer);
+    const blob = await put(`images/avatars/${filename}`, file, {
+      access: "public",
+    });
 
-    return NextResponse.json({ url: `/images/avatars/${filename}` });
+    return NextResponse.json({ url: blob.url });
   } catch {
     return NextResponse.json({ error: "上传失败" }, { status: 500 });
   }
