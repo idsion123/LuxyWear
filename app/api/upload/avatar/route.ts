@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "文件大小不能超过 2MB" }, { status: 400 });
     }
 
-    const filename = `avatar-${generateFilename()}`;
+    const filename = `avatar-${await generateFilename()}`;
     const isLocal = !process.env.BLOB_READ_WRITE_TOKEN;
 
     const url = isLocal

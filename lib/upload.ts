@@ -1,10 +1,32 @@
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { put } from "@vercel/blob";
-import sharp from "sharp";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE = 5 * 1024 * 1024;
+
+// Dynamic import so sharp is optional — native binary may fail on Vercel
+let sharpFactory: typeof import("sharp") | null | undefined = undefined;
+
+async function getSharp() {
+  if (sharpFactory !== undefined) return sharpFactory;
+  try {
+    sharpFactory = await import("sharp");
+  } catch {
+    sharpFactory = null;
+  }
+  return sharpFactory;
+}
+
+async function compressImage(buffer: Buffer): Promise<Buffer> {
+  const mod = await getSharp();
+  if (!mod) return buffer;
+  const sharp = mod.default;
+  return sharp(buffer)
+    .resize(1920, 1920, { fit: "inside", withoutEnlargement: true })
+    .webp({ quality: 80 })
+    .toBuffer();
+}
 
 export function validateFile(file: File): string | null {
   if (!ALLOWED_TYPES.includes(file.type)) {
@@ -16,8 +38,10 @@ export function validateFile(file: File): string | null {
   return null;
 }
 
-export function generateFilename(): string {
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.webp`;
+export async function generateFilename(): Promise<string> {
+  const sharp = await getSharp();
+  const ext = sharp ? "webp" : "jpg";
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
 }
 
 export function sanitizeDir(dir: string | null): string {
@@ -30,10 +54,7 @@ export async function uploadToBlob(
   path: string
 ): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
-  const processed = await sharp(buffer)
-    .resize(1920, 1920, { fit: "inside", withoutEnlargement: true })
-    .webp({ quality: 80 })
-    .toBuffer();
+  const processed = await compressImage(buffer);
   const blob = await put(path, processed, {
     access: "public",
     token: process.env.BLOB_READ_WRITE_TOKEN,
@@ -50,10 +71,7 @@ export async function saveToDisk(
   const dir = join(process.cwd(), "public", "images", subDir);
   await mkdir(dir, { recursive: true });
   const buffer = Buffer.from(await file.arrayBuffer());
-  const processed = await sharp(buffer)
-    .resize(1920, 1920, { fit: "inside", withoutEnlargement: true })
-    .webp({ quality: 80 })
-    .toBuffer();
+  const processed = await compressImage(buffer);
   await writeFile(join(dir, filename), processed);
   return `/images/${subDir}/${filename}`;
 }
