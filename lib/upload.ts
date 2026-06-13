@@ -1,0 +1,50 @@
+import { writeFile, mkdir } from "fs/promises";
+import { join } from "path";
+import { put } from "@vercel/blob";
+
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_SIZE = 5 * 1024 * 1024;
+
+export function validateFile(file: File): string | null {
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    return "仅支持 JPG、PNG、WebP 格式";
+  }
+  if (file.size > MAX_SIZE) {
+    return "文件大小不能超过 5MB";
+  }
+  return null;
+}
+
+export function generateFilename(originalName: string): string {
+  const ext = originalName.split(".").pop() || "jpg";
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
+}
+
+export function sanitizeDir(dir: string | null): string {
+  return dir && /^[a-z0-9_-]+$/.test(dir) ? dir : "others";
+}
+
+// Vercel Blob upload (production)
+export async function uploadToBlob(
+  file: File,
+  path: string
+): Promise<string> {
+  const blob = await put(path, file, {
+    access: "public",
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+  });
+  return blob.url;
+}
+
+// Local filesystem upload (development)
+export async function saveToDisk(
+  file: File,
+  subDir: string,
+  filename: string
+): Promise<string> {
+  const dir = join(process.cwd(), "public", "images", subDir);
+  await mkdir(dir, { recursive: true });
+  const buffer = Buffer.from(await file.arrayBuffer());
+  await writeFile(join(dir, filename), buffer);
+  return `/images/${subDir}/${filename}`;
+}
