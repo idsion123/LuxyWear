@@ -6,18 +6,6 @@ import { ProductDetailClient } from "./ProductDetailClient";
 
 export const revalidate = 60;
 
-export async function generateStaticParams() {
-  try {
-    const allProducts = await db
-      .select({ slug: products.slug })
-      .from(products)
-      .where(eq(products.isPublished, true));
-    return allProducts.map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
-}
-
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
