@@ -3,6 +3,15 @@ import { put } from "@vercel/blob";
 
 export async function POST(request: Request) {
   try {
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    if (!token) {
+      console.error("BLOB_READ_WRITE_TOKEN is not set in environment variables");
+      return NextResponse.json(
+        { error: "存储服务未配置，请在 Vercel 环境变量中添加 BLOB_READ_WRITE_TOKEN" },
+        { status: 500 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
@@ -32,6 +41,7 @@ export async function POST(request: Request) {
 
     const blob = await put(`images/products/${subDir}/${filename}`, file, {
       access: "public",
+      token,
     });
 
     return NextResponse.json({
@@ -41,6 +51,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Upload error:", error);
-    return NextResponse.json({ error: "上传失败" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "未知错误";
+    return NextResponse.json({ error: `上传失败: ${message}` }, { status: 500 });
   }
 }
